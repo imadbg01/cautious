@@ -1,37 +1,32 @@
+use rand::Rng;
+use std::cmp::Ordering;
+use std::io;
+
 fn main() {
-    println!("{} is my age ", 32);
+    println!("Guess the number! ");
+    let secret_number = rand::thread_rng().gen_range(1..101);
 
-    println!(
-        "{0}, this is {1} and this {1} , and this is {0}, {0}",
-        "alice", "bob"
-    );
+    loop {
+        println!("please input your guess.");
 
-    println!(
-        "{object} {verb} {subject}",
-        subject = "the quick brown fox",
-        object = "The lazy dog",
-        verb = "jump over"
-    );
+        let mut guess = String::new();
+        io::stdin()
+            .read_line(&mut guess)
+            .expect("failed to read line");
 
-    println!(
-        "{} of {:b} people know binary, the other half doesn't",
-        1, 2
-    );
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+        println!("your guess: {}", guess);
 
-    println!("{number:>width$}", number = 1, width = 6);
-    println!("{number:0>width$}", number = 1, width = 6);
-    println!("{number:`>width$}", number = 1, width = 6);
-
-    println!("{1},{},{0},{}", 1, 2);
-
-    let argument = 2 + 2;
-
-    println!("{argument}");
-    fn make_string(a: u32, b: &str) -> String {
-        format!("{b} {a}")
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("too small!"),
+            Ordering::Greater => println!("too big!"),
+            Ordering::Equal => {
+                println!("You win!");
+                break;
+            }
+        }
     }
-
-    let name = make_string(927, "label");
-
-    println!("{name}");
 }

@@ -1,2 +1,3 @@
 # cautious
-learning rust journey 
+
+Just playing around with rust
