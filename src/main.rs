@@ -1,32 +1,36 @@
-use rand::Rng;
-use std::cmp::Ordering;
-use std::io;
+use std::env::{args, Args};
 
 fn main() {
-    println!("Guess the number! ");
-    let secret_number = rand::thread_rng().gen_range(1..101);
+    let mut args: Args = args();
 
-    loop {
-        println!("please input your guess.");
+    let first = args.nth(1).unwrap();
+    let operator = args.nth(0).unwrap().chars().next().unwrap();
+    let second = args.nth(0).unwrap();
 
-        let mut guess = String::new();
-        io::stdin()
-            .read_line(&mut guess)
-            .expect("failed to read line");
+    let first_number = first.parse::<f32>().unwrap();
+    let second_number = second.parse::<f32>().unwrap();
 
-        let guess: u32 = match guess.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue,
-        };
-        println!("your guess: {}", guess);
+    let result = operate(operator, first_number, second_number);
 
-        match guess.cmp(&secret_number) {
-            Ordering::Less => println!("too small!"),
-            Ordering::Greater => println!("too big!"),
-            Ordering::Equal => {
-                println!("You win!");
-                break;
-            }
-        }
+    println!(
+        "{:?}",
+        output(first_number, operator, second_number, result)
+    );
+}
+
+fn operate(operator: char, first_number: f32, second_number: f32) -> f32 {
+    match operator {
+        '+' => first_number + second_number,
+        '-' => first_number - second_number,
+        '*' | 'x' | 'X' => first_number * second_number,
+        '/' => first_number / second_number,
+        _ => panic!("invalid input used"),
     }
+}
+
+fn output(first_number: f32, operator: char, second_number: f32, result: f32) -> String {
+    format!(
+        "{} {} {} = {}",
+        first_number, operator, second_number, result
+    )
 }
